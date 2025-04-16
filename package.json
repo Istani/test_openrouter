@@ -14,4 +14,7 @@
       "path": "../../node_modules/cz-conventional-changelog"
     }
   },
+  "dependencies": {
+    "openai": "^4.94.0"
+  }
 }
