@@ -3,6 +3,8 @@ var debug = require("@istani/debug")(require('./package.json').name);
 var envpath = __dirname + '/.env';
 var config = require('dotenv').config({ path: envpath });
 
+var path = require('path');
+
 async function sleep(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
@@ -34,7 +36,7 @@ async function TextGeneration(prompt, callback) {
     if (typeof completion.error != "undefined") {
       throw(completion.error.message);
     }
-    callback(completion.choices[0].message.content.replaceAll("\n",""));
+    callback(completion.choices[0].message.content/*.replaceAll("\n","")*/);
   }
   catch (E) {
     debug.error(JSON.stringify(E));
@@ -57,7 +59,7 @@ async function GetModels() {
 
   const response = await fetch("https://openrouter.ai/api/v1/models");
   const data = await response.json();
-  fs.writeFileSync("temp/models.json", JSON.stringify(data.data,null,2));
+  fs.writeFileSync(path.join(__dirname, "temp/models.json"), JSON.stringify(data.data,null,2));
 
   var free = [];
   for (var i = 0; i < data.data.length; i++) {
@@ -70,6 +72,6 @@ async function GetModels() {
     if (model.pricing.internal_reasoning!='0') continue;
     free.push(model);
   }
-  fs.writeFileSync("temp/models_free.json", JSON.stringify(free,null,2));
+  fs.writeFileSync(path.join(__dirname, "temp/models_free.json"), JSON.stringify(free,null,2));
 }
 GetModels();
